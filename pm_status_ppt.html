@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PM Status Report Generator</title>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #e0e0f0; min-height: 100vh; }
+  header { background: #FF3621; padding: 18px 32px; display: flex; align-items: center; gap: 12px; }
+  header h1 { font-size: 20px; font-weight: 700; color: #fff; }
+  header span { font-size: 13px; color: rgba(255,255,255,0.8); }
+  .container { max-width: 960px; margin: 0 auto; padding: 28px 24px; }
+  .card { background: #1a1a2e; border: 1px solid #2a2a45; border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; }
+  .card h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #FF3621; margin-bottom: 16px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  label { font-size: 12px; color: #9090b0; display: block; margin-bottom: 5px; }
+  input, select, textarea { width: 100%; background: #0f0f1a; border: 1px solid #333355; border-radius: 6px; padding: 8px 10px; color: #e0e0f0; font-size: 13px; font-family: inherit; }
+  textarea { resize: vertical; min-height: 70px; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: #FF3621; }
+  .row-entry { display: grid; gap: 8px; margin-bottom: 8px; background: #12122a; border-radius: 6px; padding: 10px; position: relative; }
+  .row-entry.milestone-row { grid-template-columns: 2fr 1fr 1fr 28px; }
+  .row-entry.task-row { grid-template-columns: 2fr 1fr 28px; }
+  .row-entry.risk-row { grid-template-columns: 2fr 1fr 1fr 28px; }
+  .row-entry.discuss-row { grid-template-columns: 1fr 28px; }
+  .del-btn { background: #3a1a1a; border: 1px solid #5a2020; color: #ff6060; border-radius: 4px; cursor: pointer; font-size: 14px; width: 28px; height: 28px; align-self: center; }
+  .add-btn { background: transparent; border: 1px dashed #444466; color: #9090c0; border-radius: 6px; padding: 7px; font-size: 12px; cursor: pointer; width: 100%; margin-top: 6px; }
+  .add-btn:hover { border-color: #FF3621; color: #FF3621; }
+  .status-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .consumption-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .generate-btn { background: #FF3621; color: #fff; border: none; border-radius: 8px; padding: 14px 36px; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 8px; }
+  .generate-btn:hover { background: #d42d1a; }
+  .generate-btn:disabled { background: #555; cursor: not-allowed; }
+  .status-row { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; }
+  .status-opt { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .status-dot { width: 14px; height: 14px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>PS Weekly Status Report Generator</h1>
+    <span>PptxGenJS · Databricks Professional Services</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Engagement Meta -->
+  <div class="card">
+    <h2>Engagement Details</h2>
+    <div class="grid3" style="margin-bottom:14px">
+      <div><label>Customer Name</label><input id="customer" value="Acme Corp" /></div>
+      <div><label>Engagement Name</label><input id="engagement" value="Data Lakehouse Migration" /></div>
+      <div><label>Week Ending</label><input id="weekEnding" type="date" /></div>
+    </div>
+    <div class="grid3">
+      <div><label>PM Name</label><input id="pm" value="Jane Smith" /></div>
+      <div><label>DSA / SA</label><input id="dsa" value="Pravin Varma" /></div>
+      <div><label>Overall Status</label>
+        <select id="overallStatus">
+          <option value="Green">🟢 Green – On Track</option>
+          <option value="Amber">🟡 Amber – At Risk</option>
+          <option value="Red">🔴 Red – Off Track</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Milestones -->
+  <div class="card">
+    <h2>Project Milestones</h2>
+    <div id="milestones"></div>
+    <button class="add-btn" onclick="addRow('milestones','milestone-row',['Milestone','Due Date','Status',''])">+ Add Milestone</button>
+  </div>
+
+  <!-- Accomplishments -->
+  <div class="card">
+    <h2>This Week's Accomplishments</h2>
+    <div id="accomplishments"></div>
+    <button class="add-btn" onclick="addRow('accomplishments','task-row',['Accomplishment','Owner',''])">+ Add Accomplishment</button>
+  </div>
+
+  <!-- Next Week -->
+  <div class="card">
+    <h2>Next Week's Plan</h2>
+    <div id="nextweek"></div>
+    <button class="add-btn" onclick="addRow('nextweek','task-row',['Planned Task','Owner',''])">+ Add Task</button>
+  </div>
+
+  <!-- Risks -->
+  <div class="card">
+    <h2>Watch Points / Risks</h2>
+    <div id="risks"></div>
+    <button class="add-btn" onclick="addRow('risks','risk-row',['Description','Severity','Mitigation',''])">+ Add Risk</button>
+  </div>
+
+  <!-- Consumption -->
+  <div class="card">
+    <h2>Consumption Summary (from Salesforce)</h2>
+    <div class="consumption-grid">
+      <div><label>Hours Contracted</label><input id="hoursTotal" placeholder="e.g. 400" /></div>
+      <div><label>Hours Consumed</label><input id="hoursUsed" placeholder="e.g. 220" /></div>
+      <div><label>Hours Remaining</label><input id="hoursLeft" placeholder="auto-calc" id="hoursLeft" /></div>
+      <div><label>Contract Value (AUD)</label><input id="contractValue" placeholder="e.g. $180,000" /></div>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div><label>Forecast Completion Date</label><input id="forecastDate" type="date" /></div>
+      <div><label>Notes</label><input id="consumptionNotes" placeholder="e.g. On track to complete within budget" /></div>
+    </div>
+  </div>
+
+  <!-- Points to Discuss -->
+  <div class="card">
+    <h2>Points to Discuss with Customer</h2>
+    <div id="discuss"></div>
+    <button class="add-btn" onclick="addRow('discuss','discuss-row',['Discussion Point',''])">+ Add Point</button>
+  </div>
+
+  <!-- Operational Items -->
+  <div class="card">
+    <h2>Operational Items (Internal)</h2>
+    <div id="ops"></div>
+    <button class="add-btn" onclick="addRow('ops','discuss-row',['Internal Item',''])">+ Add Item</button>
+  </div>
+
+  <button class="generate-btn" onclick="generatePPT()">⬇ Generate PowerPoint</button>
+</div>
+
+<script>
+// Set default date to today
+document.getElementById('weekEnding').valueAsDate = new Date();
+document.getElementById('forecastDate').valueAsDate = new Date(Date.now() + 30*24*60*60*1000);
+
+// Auto-calc hours remaining
+document.getElementById('hoursTotal').addEventListener('input', calcHours);
+document.getElementById('hoursUsed').addEventListener('input', calcHours);
+function calcHours() {
+  const t = parseInt(document.getElementById('hoursTotal').value) || 0;
+  const u = parseInt(document.getElementById('hoursUsed').value) || 0;
+  document.getElementById('hoursLeft').value = t && u ? (t - u) : '';
+}
+
+// Row management
+const rowConfigs = {
+  'milestone-row': ['Milestone', 'Due Date', 'Status'],
+  'task-row': ['Description', 'Owner'],
+  'risk-row': ['Description', 'Severity', 'Mitigation'],
+  'discuss-row': ['Item']
+};
+
+function addRow(containerId, rowClass, placeholders) {
+  const container = document.getElementById(containerId);
+  const div = document.createElement('div');
+  div.className = `row-entry ${rowClass}`;
+  const cols = placeholders.slice(0, -1);
+  let html = '';
+  cols.forEach((p, i) => {
+    if (p === 'Status' || p === 'Severity') {
+      html += `<select><option>On Track</option><option>At Risk</option><option>Delayed</option><option>Complete</option></select>`;
+      if (p === 'Severity') {
+        div.querySelector ? null : null;
+        // will fix after render
+      }
+    } else if (p === 'Due Date') {
+      html += `<input type="date" />`;
+    } else {
+      html += `<input placeholder="${p}" />`;
+    }
+  });
+  html += `<button class="del-btn" onclick="this.parentElement.remove()">×</button>`;
+  div.innerHTML = html;
+  // Fix severity select
+  if (rowClass === 'risk-row') {
+    const selects = div.querySelectorAll('select');
+    if (selects[0]) selects[0].innerHTML = '<option>High</option><option selected>Medium</option><option>Low</option>';
+  }
+  container.appendChild(div);
+}
+
+// Seed defaults
+function seedDefaults() {
+  addRow('milestones','milestone-row',['x']); 
+  const m = document.querySelector('#milestones .row-entry input');
+  if(m) m.value = 'Discovery & Requirements';
+  addRow('accomplishments','task-row',['x']);
+  document.querySelector('#accomplishments .row-entry input').value = 'Completed data profiling on source systems';
+  addRow('nextweek','task-row',['x']);
+  document.querySelector('#nextweek .row-entry input').value = 'Begin ETL pipeline design';
+  addRow('risks','risk-row',['x']);
+  document.querySelector('#risks .row-entry input').value = 'Access to source systems pending approval';
+  addRow('discuss','discuss-row',['x']);
+  document.querySelector('#discuss .row-entry input').value = 'Sign-off required on data model design by EOW';
+  addRow('ops','discuss-row',['x']);
+  document.querySelector('#ops .row-entry input').value = 'Submit timesheet by Thursday';
+}
+seedDefaults();
+
+// Color palette
+const BRAND = {
+  red: 'FF3621',
+  darkBg: '1C1C1C',
+  white: 'FFFFFF',
+  lightGray: 'F5F5F5',
+  medGray: 'CCCCCC',
+  textDark: '1C1C1C',
+  green: '00A86B',
+  amber: 'FFA500',
+  redStatus: 'D42D1A',
+  blue: '1E3A5F'
+};
+
+function statusColor(s) {
+  s = (s||'').toLowerCase();
+  if (s.includes('track') || s.includes('complete')) return BRAND.green;
+  if (s.includes('risk') || s.includes('amber')) return BRAND.amber;
+  if (s.includes('delay') || s.includes('red') || s.includes('off')) return BRAND.redStatus;
+  return BRAND.medGray;
+}
+
+function getRows(id) {
+  const rows = [];
+  document.querySelectorAll(`#${id} .row-entry`).forEach(row => {
+    const inputs = row.querySelectorAll('input, select, textarea');
+    const vals = Array.from(inputs).map(i => i.value.trim());
+    if (vals[0]) rows.push(vals);
+  });
+  return rows;
+}
+
+function generatePPT() {
+  const btn = document.querySelector('.generate-btn');
+  btn.disabled = true; btn.textContent = 'Generating...';
+
+  const prs = new PptxGenJS();
+  prs.layout = 'LAYOUT_WIDE'; // 13.33 x 7.5
+
+  const customer = document.getElementById('customer').value || 'Customer';
+  const engagement = document.getElementById('engagement').value || 'Engagement';
+  const weekEnding = document.getElementById('weekEnding').value;
+  const pm = document.getElementById('pm').value;
+  const dsa = document.getElementById('dsa').value;
+  const overallStatus = document.getElementById('overallStatus').value;
+  const statusCol = statusColor(overallStatus.toLowerCase());
+
+  const hoursTotal = document.getElementById('hoursTotal').value || 'TBC';
+  const hoursUsed = document.getElementById('hoursUsed').value || 'TBC';
+  const hoursLeft = document.getElementById('hoursLeft').value || 'TBC';
+  const contractValue = document.getElementById('contractValue').value || 'TBC';
+  const forecastDate = document.getElementById('forecastDate').value || 'TBC';
+  const consumptionNotes = document.getElementById('consumptionNotes').value;
+
+  const milestones = getRows('milestones');
+  const accomplishments = getRows('accomplishments');
+  const nextweek = getRows('nextweek');
+  const risks = getRows('risks');
+  const discuss = getRows('discuss');
+  const ops = getRows('ops');
+
+  const pctUsed = hoursTotal !== 'TBC' && hoursUsed !== 'TBC'
+    ? Math.round((parseInt(hoursUsed)/parseInt(hoursTotal))*100) + '%'
+    : 'TBC';
+
+  // Slide master defaults
+  const titleFont = 'Helvetica Neue';
+  const bodyFont = 'Helvetica Neue';
+
+  // ─── SLIDE 1: Header + Milestones + Accomplishments ───────────────────────
+  const s1 = prs.addSlide();
+  s1.background = { color: BRAND.white };
+
+  // Top bar
+  s1.addShape(prs.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.7, fill: { color: BRAND.red } });
+  s1.addText(`${customer} – Weekly Status Report`, { x: 0.3, y: 0.1, w: 9, h: 0.5, fontSize: 18, bold: true, color: BRAND.white, fontFace: titleFont });
+  s1.addText(`Week ending ${weekEnding}`, { x: 9.5, y: 0.12, w: 3.5, h: 0.45, fontSize: 11, color: BRAND.white, fontFace: bodyFont, align: 'right' });
+
+  // Status badge
+  s1.addShape(prs.ShapeType.roundRect, { x: 0.3, y: 0.85, w: 2.2, h: 0.38, fill: { color: statusCol }, rectRadius: 0.1 });
+  s1.addText(`● ${overallStatus}`, { x: 0.3, y: 0.85, w: 2.2, h: 0.38, fontSize: 11, bold: true, color: BRAND.white, fontFace: bodyFont, align: 'center' });
+
+  // Meta
+  s1.addText(`PM: ${pm}   |   SA/DSA: ${dsa}   |   Engagement: ${engagement}`, { x: 2.7, y: 0.88, w: 10, h: 0.35, fontSize: 10, color: '666666', fontFace: bodyFont });
+
+  // Section: Milestones
+  s1.addShape(prs.ShapeType.rect, { x: 0.3, y: 1.38, w: 6, h: 0.3, fill: { color: BRAND.red } });
+  s1.addText('PROJECT MILESTONES', { x: 0.3, y: 1.38, w: 6, h: 0.3, fontSize: 9, bold: true, color: BRAND.white, fontFace: titleFont });
+
+  // Milestone table
+  const mHeader = [
+    [{ text: 'Milestone', options: { bold: true, color: BRAND.white } }, { text: 'Due Date', options: { bold: true, color: BRAND.white } }, { text: 'Status', options: { bold: true, color: BRAND.white } }]
+  ];
+  const mRows = milestones.map(r => [
+    { text: r[0] || '' },
+    { text: r[1] || '' },
+    { text: r[2] || '', options: { bold: true, color: statusColor(r[2]) } }
+  ]);
+
+  s1.addTable([...mHeader, ...mRows], {
+    x: 0.3, y: 1.72, w: 6,
+    colW: [3, 1.4, 1.6],
+    border: { pt: 0.5, color: 'DDDDDD' },
+    fill: { color: BRAND.white },
+    rowH: 0.32,
+    fontFace: bodyFont,
+    fontSize: 10,
+    align: 'left',
+    valign: 'middle',
+    autoPage: false,
+    headerRow: true,
+    firstRowAsHeader: true,
+    ...(mRows.length === 0 ? {} : {}),
+  });
+
+  // Section: Accomplishments
+  s1.addShape(prs.ShapeType.rect, { x: 6.83, y: 1.38, w: 6.2, h: 0.3, fill: { color: BRAND.red } });
+  s1.addText("THIS WEEK'S ACCOMPLISHMENTS", { x: 6.83, y: 1.38, w: 6.2, h: 0.3, fontSize: 9, bold: true, color: BRAND.white, fontFace: titleFont });
+
+  const accBullets = accomplishments.map(r => ({ text: `${r[0]}${r[1] ? ' – ' + r[1] : ''}`, options: { bullet: { type: 'bullet', indent: 10 }, fontSize: 10, color: BRAND.textDark } }));
+  if (accBullets.length === 0) accBullets.push({ text: 'No items entered', options: { fontSize: 10, color: '999999' } });
+  s1.addText(accBullets, { x: 6.83, y: 1.72, w: 6.2, h: 2.0, fontFace: bodyFont, valign: 'top', paraSpaceBefore: 4 });
+
+  // Section: Next Week
+  s1.addShape(prs.ShapeType.rect, { x: 6.83, y: 3.82, w: 6.2, h: 0.3, fill: { color: BRAND.blue } });
+  s1.addText("NEXT WEEK'S PLAN", { x: 6.83, y: 3.82, w: 6.2, h: 0.3, fontSize: 9, bold: true, color: BRAND.white, fontFace: titleFont });
+
+  const nwBullets = nextweek.map(r => ({ text: `${r[0]}${r[1] ? ' – ' + r[1] : ''}`, options: { bullet: { type: 'bullet', indent: 10 }, fontSize: 10, color: BRAND.textDark } }));
+  if (nwBullets.length === 0) nwBullets.push({ text: 'No items entered', options: { fontSize: 10, color: '999999' } });
+  s1.addText(nwBullets, { x: 6.83, y: 4.15, w: 6.2, h: 1.9, fontFace: bodyFont, valign: 'top', paraSpaceBefore: 4 });
+
+  // Divider line
+  s1.addShape(prs.ShapeType.line, { x: 6.6, y: 1.38, w: 0, h: 4.8, line: { color: 'DDDDDD', width: 1 } });
+
+  // ─── SLIDE 2: Risks + Consumption + Points to Discuss + Ops ──────────────
+  const s2 = prs.addSlide();
+  s2.background = { color: BRAND.white };
+
+  // Top bar
+  s2.addShape(prs.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.7, fill: { color: BRAND.red } });
+  s2.addText(`${customer} – Weekly Status Report`, { x: 0.3, y: 0.1, w: 9, h: 0.5, fontSize: 18, bold: true, color: BRAND.white, fontFace: titleFont });
+  s2.addText(`Week ending ${weekEnding}`, { x: 9.5, y: 0.12, w: 3.5, h: 0.45, fontSize: 11, color: BRAND.white, fontFace: bodyFont, align: 'right' });
+
+  // Section: Risks
+  s2.addShape(prs.ShapeType.rect, { x: 0.3, y: 0.85, w: 6, h: 0.3, fill: { color: BRAND.red } });
+  s2.addText('WATCH POINTS / RISKS', { x: 0.3, y: 0.85, w: 6, h: 0.3, fontSize: 9, bold: true, color: BRAND.white, fontFace: titleFont });
+
+  const rHeader = [[
+    { text: 'Description', options: { bold: true, color: BRAND.white } },
+    { text: 'Severity', options: { bold: true, color: BRAND.white } },
+    { text: 'Mitigation', options: { bold: true, color: BRAND.white } }
+  ]];
+  const rRows = risks.map(r => [
+    { text: r[0] || '' },
+    { text: r[1] || '', options: { bold: true, color: statusColor(r[1]) } },
+    { text: r[2] || '' }
+  ]);
+  s2.addTable([...rHeader, ...rRows], {
+    x: 0.3, y: 1.2, w: 6,
+    colW: [2.4, 1, 2.6],
+    border: { pt: 0.5, color: 'DDDDDD' },
+    fill: { color: BRAND.white },
+    rowH: 0.32,
+    fontFace: bodyFont, fontSize: 10, valign: 'middle',
+    firstRowAsHeader: true
+  });
+
+  // Section: Consumption
+  s2.addShape(prs.ShapeType.rect, { x: 0.3, y: 2.95, w: 6, h: 0.3, fill: { color: BRAND.blue } });
+  s2.addText('CONSUMPTION SUMMARY', { x: 0.3, y: 2.95, w: 6, h: 0.3, fontSize: 9, bold: true, color: BRAND.white, fontFace: titleFont });
+
+  // Consumption boxes
+  const cBoxes = [
+    { label: 'Contracted', value: hoursTotal + ' hrs', x: 0.3 },
+    { label: 'Consumed', value: hoursUsed + ' hrs', x: 1.85 },
+    { label: 'Remaining', value: hoursLeft + ' hrs', x: 3.4 },
+    { label: '% Used', value: pctUsed, x: 4.95 },
+  ];
+  cBoxes.forEach(b => {
+    s2.addShape(prs.ShapeType.roundRect, { x: b.x, y: 3.3, w: 1.4, h: 0.9, fill: { color: BRAND.lightGray }, rectRadius: 0.08 });
+    s2.addText(b.value, { x: b.x, y: 3.35, w: 1.4, h: 0.5, fontSize: 15, bold: true, color: BRAND.red, fontFace: titleFont, align: 'center' });
+    s2.addText(b.label, { x: b.x, y: 3.8, w: 1.4, h: 0.3, fontSize: 9, color: '666666', fontFace: bodyFont, align: 'center' });
+  });
+  s2.addText([
+    { text: `Contract Value: ${contractValue}   |   Forecast Completion: ${forecastDate}`, options: { fontSize: 10, color: '444444' } },
+    ...(consumptionNotes ? [{ text: `\n${consumptionNotes}`, options: { fontSize: 9, color: '666666', italic: true } }] : [])
+  ], { x: 0.3, y: 4.28, w: 6, h: 0.5, fontFace: bodyFont });
+
+  // Divider
+  s2.addShape(prs.ShapeType.line, { x: 6.6, y: 0.85, h: 4.8, w: 0, line: { color: 'DDDDDD', width: 1 } });
+
+  // Section: Points to Discuss
+  s2.addShape(prs.ShapeType.rect, { x: 6.83, y: 0.85, w: 6.2, h: 0.3, fill: { color: BRAND.red } });
+  s2.addText('POINTS TO DISCUSS WITH CUSTOMER', { x: 6.83, y: 0.85, w: 6.2, h: 0.3, fontSize: 9, bold: true, color: BRAND.white, fontFace: titleFont });
+
+  const discBullets = discuss.map(r => ({ text: r[0], options: { bullet: { type: 'bullet', indent: 10 }, fontSize: 11, color: BRAND.textDark, paraSpaceBefore: 6 } }));
+  if (discBullets.length === 0) discBullets.push({ text: 'No items entered', options: { fontSize: 10, color: '999999' } });
+  s2.addText(discBullets, { x: 6.83, y: 1.2, w: 6.2, h: 2.2, fontFace: bodyFont, valign: 'top' });
+
+  // Section: Operational Items
+  s2.addShape(prs.ShapeType.rect, { x: 6.83, y: 3.5, w: 6.2, h: 0.3, fill: { color: BRAND.blue } });
+  s2.addText('OPERATIONAL ITEMS (INTERNAL)', { x: 6.83, y: 3.5, w: 6.2, h: 0.3, fontSize: 9, bold: true, color: BRAND.white, fontFace: titleFont });
+
+  const opsBullets = ops.map(r => ({ text: r[0], options: { bullet: { type: 'bullet', indent: 10 }, fontSize: 10, color: BRAND.textDark, paraSpaceBefore: 5 } }));
+  if (opsBullets.length === 0) opsBullets.push({ text: 'No items entered', options: { fontSize: 10, color: '999999' } });
+  s2.addText(opsBullets, { x: 6.83, y: 3.85, w: 6.2, h: 2.0, fontFace: bodyFont, valign: 'top' });
+
+  // Footer both slides
+  [s1, s2].forEach(s => {
+    s.addShape(prs.ShapeType.rect, { x: 0, y: 7.2, w: 13.33, h: 0.3, fill: { color: 'F0F0F0' } });
+    s.addText('CONFIDENTIAL – Databricks Professional Services', { x: 0.3, y: 7.22, w: 8, h: 0.25, fontSize: 8, color: '999999', fontFace: bodyFont });
+    s.addText(`Generated ${new Date().toLocaleDateString()}`, { x: 9, y: 7.22, w: 4, h: 0.25, fontSize: 8, color: '999999', fontFace: bodyFont, align: 'right' });
+  });
+
+  const filename = `${customer.replace(/\s/g,'_')}_Status_${weekEnding}.pptx`;
+  prs.writeFile({ fileName: filename }).then(() => {
+    btn.disabled = false;
+    btn.textContent = `⬇ Generate PowerPoint`;
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "pm-automation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ventia PS weekly report automation",
+  "scripts": {
+    "report:ppt": "node generate_ventia_ppt.js",
+    "report:ventia:ppt": "node generate_ventia_ppt.js --customer \"Ventia\" --engagement \"Supply Chain\""
+  },
+  "dependencies": {
+    "pptxgenjs": "latest"
+  }
+}

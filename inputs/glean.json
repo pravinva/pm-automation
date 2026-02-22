@@ -1,0 +1,12 @@
+{
+  "insights": [
+    {
+      "topic": "Architecture decision record missing for report approval flow",
+      "owner": "Architecture Guild",
+      "state": "open",
+      "priority": "Medium",
+      "summary": "Glean search surfaced conflicting references across two docs.",
+      "follow_up": "Publish a single ADR and update all stale references."
+    }
+  ]
+}

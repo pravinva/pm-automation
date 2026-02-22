@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PS Report Launcher</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --red: #FF6600; --red-dim: rgba(255,102,0,0.12); --red-border: rgba(255,102,0,0.35);
+    --bg: #1a1a1a; --surface: #222222; --surface2: #2a2a2a;
+    --border: #333333; --border2: #3d3d3d;
+    --text: #FF8C00; --muted: #7a5a2a; --sub: #cc7700;
+    --green: #FFaa00; --amber: #FF6600; --blue: #ffcc44;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+  html, body { height: 100%; }
+  body { font-family: var(--mono); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* Layout */
+  .layout { display: grid; grid-template-columns: 420px 1fr; min-height: 100vh; }
+
+  /* Left panel */
+  .left { background: #252525; border-right: 1px solid var(--border); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+
+  .brand { padding: 24px 28px 20px; border-bottom: 1px solid var(--border); }
+  .brand-badge { display: inline-flex; align-items: center; gap: 7px; background: var(--red-dim); border: 1px solid var(--red-border); border-radius: 2px; padding: 5px 10px; margin-bottom: 12px; }
+  .brand-badge span { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--red); }
+  .brand h1 { font-size: 20px; font-weight: 700; line-height: 1.3; color: #FF8C00; font-family: var(--mono); letter-spacing: -0.5px; }
+  .brand p { font-size: 12px; color: #7a5020; margin-top: 5px; line-height: 1.5; font-family: var(--mono); }
+
+  .form-body { padding: 24px 28px; flex: 1; }
+
+  .step { margin-bottom: 28px; }
+  .step-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: #FF6600; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .step-label::after { content: ''; flex: 1; height: 1px; background: #3d3d3d; }
+
+  .field { margin-bottom: 14px; }
+  .field label { font-size: 10px; color: #cc7700; display: block; margin-bottom: 5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-family: var(--mono); }
+  .field input, .field select {
+    width: 100%; background: #111111; border: 1px solid #3d3d3d;
+    border-radius: 3px; padding: 9px 12px; color: var(--text);
+    font-size: 13px; font-family: var(--mono); outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus, .field select:focus { border-color: var(--red); box-shadow: 0 0 0 1px rgba(255,102,0,0.2); }
+  .field input::placeholder { color: #4a3010; }
+  .field select option { background: #1a1a1a; color: var(--text); }
+  .field .hint { font-size: 10px; color: #5a3a10; margin-top: 4px; font-family: var(--mono); }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* Auto-detect pill */
+  .auto-row { display: flex; align-items: center; gap: 8px; }
+  .auto-row input { flex: 1; }
+  .auto-badge {
+    flex-shrink: 0; font-size: 9px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; padding: 3px 7px; border-radius: 4px;
+    background: rgba(255, 180, 0, 0.1); color: #ffb300;
+    border: 1px solid rgba(255, 180, 0, 0.3); white-space: nowrap;
+  }
+  .auto-badge.pending { background: rgba(255,102,0,0.1); color: #FF6600; border-color: rgba(255,102,0,0.3); }
+
+  /* optional tag */
+  .opt-tag {
+    display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: 0.5px;
+    color: var(--muted); border: 1px solid var(--border2); border-radius: 3px;
+    padding: 1px 5px; margin-left: 6px; vertical-align: middle;
+  }
+
+  /* Generate button */
+  .gen-wrap { padding: 0 28px 28px; }
+  .gen-btn {
+    width: 100%; background: var(--red); border: none; border-radius: 2px;
+    padding: 13px; font-size: 14px; font-weight: 700; color: #fff;
+    cursor: pointer; font-family: var(--sans); letter-spacing: 0.3px;
+    transition: background 0.15s, transform 0.1s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .gen-btn:hover { background: #FF8C00; }
+  .gen-btn:active { transform: scale(0.99); }
+  .gen-btn:disabled { background: #2a2a2a; color: #4a3010; cursor: not-allowed; }
+
+  /* Right panel */
+  .right { display: flex; flex-direction: column; padding: 32px; overflow-y: auto; }
+
+  .output-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .output-title { font-size: 11px; font-weight: 700; color: #FF8C00; letter-spacing: 2px; font-family: var(--mono); text-transform: uppercase; }
+
+  .output-actions { display: flex; gap: 8px; }
+  .action-btn {
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 2px; padding: 7px 14px; font-size: 12px; font-weight: 600;
+    color: var(--sub); cursor: pointer; font-family: var(--sans);
+    transition: all 0.15s; display: flex; align-items: center; gap: 6px;
+  }
+  .action-btn:hover { border-color: var(--red-border); color: var(--text); }
+  .action-btn.primary { background: var(--red); border-color: var(--red); color: #fff; }
+  .action-btn.primary:hover { background: #e02d1a; }
+  .action-btn.copied { background: rgba(0,217,126,0.1); border-color: rgba(0,217,126,0.3); color: var(--green); }
+
+  /* Prompt display */
+  .prompt-box {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 2px; overflow: hidden; display: flex; flex-direction: column;
+    min-height: 500px;
+  }
+  .prompt-toolbar {
+    background: #FF6600; border-bottom: 1px solid #cc5200;
+    padding: 10px 16px; display: flex; align-items: center; gap: 8px;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .prompt-filename { font-family: var(--mono); font-size: 11px; color: #fff; margin-left: 4px; font-weight: 600; }
+  .prompt-content {
+    flex: 1; padding: 20px 24px; font-family: var(--mono); font-size: 12px;
+    line-height: 1.8; color: #FF8C00; overflow-y: auto; white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* Syntax highlight classes */
+  .tok-comment { color: #7a5020; }
+  .tok-section { color: #FF6600; font-weight: 600; }
+  .tok-key { color: #ffcc44; }
+  .tok-val { color: #ffd080; }
+  .tok-gate { color: #ff4400; font-weight: 700; }
+  .tok-phase { color: #FF8C00; font-weight: 700; letter-spacing: 0.5px; }
+
+  /* Empty state */
+  .empty-state {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 12px; color: var(--muted); text-align: center;
+    padding: 40px;
+  }
+  .empty-icon { font-size: 40px; opacity: 0.3; }
+  .empty-state h3 { font-size: 14px; font-weight: 700; color: #FF8C00; font-family: var(--mono); }
+  .empty-state p { font-size: 12px; line-height: 1.6; max-width: 300px; color: #7a5020; font-family: var(--mono); }
+
+  /* Checklist */
+  .checklist { margin-top: 24px; }
+  .check-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 2px; font-size: 12px;
+    margin-bottom: 6px; border: 1px solid transparent;
+  }
+  .check-item.done { background: rgba(255,180,0,0.05); border-color: rgba(255,180,0,0.2); color: #cc7700; }
+  .check-item.pending { background: rgba(255,102,0,0.05); border-color: rgba(255,102,0,0.2); color: #cc7700; }
+  .check-item.waiting { background: #222; border-color: #333; color: #5a3a10; }
+  .check-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Workflow steps */
+  .workflow { margin-top: 24px; }
+  .wf-step {
+    display: flex; gap: 14px; padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .wf-step:last-child { border-bottom: none; }
+  .wf-num {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--surface2);
+    border: 1px solid var(--border2); display: flex; align-items: center;
+    justify-content: center; font-size: 10px; font-weight: 700; color: var(--muted);
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .wf-num.active { background: rgba(255,102,0,0.2); border-color: rgba(255,102,0,0.5); color: #FF6600; }
+  .wf-content h4 { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+  .wf-content p { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  /* Tooltip */
+  .tooltip-wrap { position: relative; display: inline-block; }
+  .tooltip-wrap:hover .tooltip { opacity: 1; pointer-events: all; }
+  .tooltip {
+    position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%);
+    background: #1a1a30; border: 1px solid var(--border2); border-radius: 2px;
+    padding: 6px 10px; font-size: 11px; color: var(--sub); white-space: nowrap;
+    opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 100;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useCallback, useMemo } = React;
+
+/* ── helpers ── */
+function nextFriday() {
+  const d = new Date();
+  const day = d.getDay(); // 0=Sun, 5=Fri
+  const diff = (5 - day + 7) % 7 || 7;
+  d.setDate(d.getDate() + diff);
+  return d.toISOString().slice(0, 10);
+}
+
+function slugify(name) {
+  return name.toLowerCase()
+    .replace(/\b(pty|ltd|limited|australia|group|corp|inc)\b/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+    .slice(0, 20);
+}
+
+function guessDomain(name) {
+  const slug = slugify(name).replace(/-/g,'');
+  return slug ? `${slug}.com.au` : '';
+}
+
+function guessSlack(name) {
+  const slug = slugify(name);
+  return slug ? `#proj-${slug}` : '';
+}
+
+/* ── prompt generator ── */
+function buildPrompt(f) {
+  const weekEnd = f.weekEnding || nextFriday();
+  return `## PS REPORT GENERATION — ${f.customerName.toUpperCase()}
+
+You are a Databricks Professional Services PM assistant.
+Generate a weekly status report JSON for the engagement below.
+Output ONLY the final JSON block — no prose, no explanation.
+
+---
+## ENGAGEMENT VARIABLES
+
+CUSTOMER_NAME:     ${f.customerName}
+ENGAGEMENT_NAME:   ${f.engagementName || '(discover from Salesforce — see Phase 1D)'}
+CUSTOMER_DOMAIN:   ${f.customerDomain || '(derive from customer name)'}
+SF_ACCOUNT_NAME:   ${f.customerName}
+SLACK_CHANNEL:     ${f.slackChannel || '(discover: search Slack for channels matching customer name)'}
+GDRIVE_FOLDER:     ${f.gdriveFolder || '(discover: search Drive for folders matching engagement name)'}
+TIMEFRAME_DAYS:    ${f.timeframeDays || 7}
+PM_NAME:           ${f.pmName}
+DSA_NAME:          ${f.dsaName}
+WEEK_ENDING:       ${weekEnd}
+
+---
+## PHASE 1A — Slack
+
+Use mcp__slack__slack_read_api_call.
+Search channel SLACK_CHANNEL for messages from the last TIMEFRAME_DAYS days.
+If channel is unknown, search Slack for channels containing the customer name slug first.
+Extract: decisions made, blockers raised, escalations, key updates, action items.
+Store as SLACK_DATA.
+
+---
+## PHASE 1B — Gmail
+
+Use mcp__google__google_read_api_call on Gmail.
+Search emails to/from CUSTOMER_DOMAIN in the last TIMEFRAME_DAYS days.
+Extract: accomplishments, commitments to customer, risks, open questions, next steps.
+Store as EMAIL_DATA.
+
+---
+## PHASE 1C — Google Drive
+
+Use mcp__google__google_read_api_call on Drive/Sheets.
+Search for GDRIVE_FOLDER, or search Drive for folders/files matching ENGAGEMENT_NAME.
+Look for: project plan, tracker spreadsheet, milestone log, risk register.
+Extract: milestones (name, due_date, status), current week tasks, next week tasks, risks.
+If no tracker found set tracker_found: false and return empty arrays.
+Store as TRACKER_DATA.
+
+---
+## PHASE 1D — Salesforce ⚠️ NUMBERS GATE
+
+Use the fe-internal-tools:field-data-analyst agent.
+Query: "For Salesforce account '${f.customerName}', find all Professional Services opportunities.
+Return: contracted hours, consumed hours, remaining hours, contract value AUD,
+consumption percentage, forecast completion date, opportunity stage, opportunity ID.
+Filter to open or recently closed PS engagements only."
+
+Store as SF_DATA.
+
+⚠️  GATE: If SF_DATA.hours_contracted AND SF_DATA.hours_consumed are both null,
+STOP and output ONLY:
+{ "error": "Salesforce returned no consumption data for ${f.customerName}. Halted. PM must verify SF opportunity manually." }
+
+---
+## PHASE 1E — Glean
+
+Use mcp__glean__glean_read_api_call.
+Search for documents related to "${f.customerName}" or "${f.engagementName || f.customerName}"
+from the last TIMEFRAME_DAYS days.
+Exclude: generic company-wide docs, HR/admin content, confidence < 0.7.
+Store as GLEAN_DATA.
+
+---
+## PHASE 2 — Assemble Output JSON
+
+Rules:
+- Numbers (hours, contract value) → SF_DATA ONLY. Never from email or Slack.
+- Null in SF_DATA → use null in output, never estimate or carry forward.
+- Milestones → prefer TRACKER_DATA. Supplement with SLACK_DATA/EMAIL_DATA.
+- Accomplishments → SLACK_DATA + EMAIL_DATA. Prefer past tense, max 15 words each.
+- Risks → merge TRACKER_DATA risks + Slack blockers/escalations. Deduplicate.
+- overall_status logic:
+    "Red"   → any High severity risk OR 2+ milestones Delayed
+    "Amber" → any Medium risk OR 1 milestone At Risk/Delayed
+    "Green" → no risks above Low AND all milestones On Track/Complete
+- Keep all text concise. Max 15 words per bullet/description.
+- week_ending must be: ${weekEnd}
+
+Output ONLY this JSON — no markdown fences, no other text:
+
+{
+  "engagement": {
+    "customer_name": "${f.customerName}",
+    "engagement_name": "",
+    "week_ending": "${weekEnd}",
+    "pm_name": "${f.pmName}",
+    "dsa_name": "${f.dsaName}",
+    "overall_status": "Green | Amber | Red"
+  },
+  "milestones": [
+    { "name": "", "due_date": "YYYY-MM-DD", "status": "On Track | At Risk | Delayed | Complete" }
+  ],
+  "accomplishments": [
+    { "description": "", "owner": "" }
+  ],
+  "next_week": [
+    { "task": "", "owner": "" }
+  ],
+  "risks": [
+    { "description": "", "severity": "High | Medium | Low", "mitigation": "" }
+  ],
+  "consumption": {
+    "hours_contracted": null,
+    "hours_consumed": null,
+    "contract_value_aud": "",
+    "forecast_completion_date": "YYYY-MM-DD",
+    "notes": ""
+  },
+  "discuss": [
+    { "point": "" }
+  ],
+  "operational": [
+    { "item": "" }
+  ]
+}`;
+}
+
+/* ── syntax highlighter (simple regex pass) ── */
+function highlight(text) {
+  if (!text) return '';
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    // Section headers
+    .replace(/(## .+)/g, '<span class="tok-section">$1</span>')
+    // Phase labels
+    .replace(/(PHASE \d[A-Z]? [—–].+)/g, '<span class="tok-phase">$1</span>')
+    // Gate warning
+    .replace(/(⚠️.*)/g, '<span class="tok-gate">$1</span>')
+    // Keys (CAPS_WORD:)
+    .replace(/\b([A-Z_]{3,}(?:_[A-Z]+)*)(:)/g, '<span class="tok-key">$1</span>$2')
+    // Comments / rules lines
+    .replace(/(^- .+$)/gm, '<span class="tok-comment">$1</span>')
+    // Quoted strings
+    .replace(/"([^"]{0,60})"/g, (_, v) => `"<span class="tok-val">${v}</span>"`)
+    // null
+    .replace(/\bnull\b/g, '<span class="tok-gate">null</span>');
+}
+
+/* ── components ── */
+function Field({ label, optional, children, hint }) {
+  return (
+    <div className="field">
+      <label>{label}{optional && <span className="opt-tag">optional</span>}</label>
+      {children}
+      {hint && <div className="hint">{hint}</div>}
+    </div>
+  );
+}
+
+function AutoField({ label, value, onChange, placeholder, autoValue, autoLabel }) {
+  const isAuto = !value && !!autoValue;
+  return (
+    <div className="field">
+      <label>{label}</label>
+      <div className="auto-row">
+        <input
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          placeholder={isAuto ? autoValue : placeholder}
+          style={isAuto ? { color: 'var(--muted)', fontStyle: 'italic' } : {}}
+        />
+        {isAuto && <span className="auto-badge pending">{autoLabel || 'auto'}</span>}
+        {!isAuto && value && <span className="auto-badge">✓ set</span>}
+      </div>
+    </div>
+  );
+}
+
+/* ── main app ── */
+function App() {
+  const [form, setForm] = useState({
+    customerName: '',
+    engagementName: '',
+    pmName: '',
+    dsaName: 'Pravin Varma',
+    customerDomain: '',
+    slackChannel: '',
+    gdriveFolder: '',
+    timeframeDays: '7',
+    weekEnding: nextFriday(),
+  });
+  const [prompt, setPrompt] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const set = (k) => (v) => setForm(f => ({ ...f, [k]: v }));
+
+  const derivedDomain = useMemo(() => guessDomain(form.customerName), [form.customerName]);
+  const derivedSlack  = useMemo(() => guessSlack(form.customerName),  [form.customerName]);
+
+  const canGenerate = form.customerName.trim() && form.pmName.trim();
+
+  const generate = () => {
+    const filled = {
+      ...form,
+      customerDomain: form.customerDomain || derivedDomain,
+      slackChannel:   form.slackChannel   || derivedSlack,
+    };
+    setPrompt(buildPrompt(filled));
+  };
+
+  const copy = async () => {
+    await navigator.clipboard.writeText(prompt);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  // validation checklist
+  const checks = [
+    { label: 'Customer name', done: !!form.customerName },
+    { label: 'PM name',       done: !!form.pmName },
+    { label: 'DSA name',      done: !!form.dsaName },
+    { label: 'Week ending',   done: !!form.weekEnding },
+    { label: 'Slack channel', done: !!(form.slackChannel || form.customerName), note: form.slackChannel ? null : 'will auto-discover' },
+    { label: 'GDrive folder', done: !!form.gdriveFolder, optional: true },
+  ];
+
+  return (
+    <div className="layout">
+      {/* ── LEFT PANEL ── */}
+      <div className="left">
+        <div className="brand">
+          <div className="brand-badge">
+            <span>Databricks PS</span>
+          </div>
+          <h1>Weekly Report<br/>Launcher</h1>
+          <p>Fill in the engagement details. The app generates a ready-to-run Claude Code prompt — copy and paste it in.</p>
+        </div>
+
+        <div className="form-body">
+
+          {/* Step 1: Customer */}
+          <div className="step">
+            <div className="step-label">1 · Customer</div>
+
+            <Field label="Customer Name" hint="Used to discover SF opportunity and Slack channel automatically">
+              <input
+                value={form.customerName}
+                onChange={e => set('customerName')(e.target.value)}
+                placeholder="e.g. Energy Australia"
+                autoFocus
+              />
+            </Field>
+
+            <Field label="Engagement Name" optional hint="Leave blank — Claude Code will discover from Salesforce">
+              <input
+                value={form.engagementName}
+                onChange={e => set('engagementName')(e.target.value)}
+                placeholder="auto-discovered from SF"
+                style={{ color: form.engagementName ? 'var(--text)' : 'var(--muted)', fontStyle: form.engagementName ? 'normal' : 'italic' }}
+              />
+            </Field>
+
+            <AutoField
+              label="Customer Email Domain"
+              value={form.customerDomain}
+              onChange={set('customerDomain')}
+              placeholder="e.g. energyaustralia.com.au"
+              autoValue={derivedDomain}
+              autoLabel="guessed"
+            />
+          </div>
+
+          {/* Step 2: People */}
+          <div className="step">
+            <div className="step-label">2 · People</div>
+            <div className="row2">
+              <Field label="PM Name">
+                <input value={form.pmName} onChange={e => set('pmName')(e.target.value)} placeholder="e.g. Teng Liu" />
+              </Field>
+              <Field label="DSA / SA">
+                <input value={form.dsaName} onChange={e => set('dsaName')(e.target.value)} placeholder="e.g. Pravin Varma" />
+              </Field>
+            </div>
+          </div>
+
+          {/* Step 3: Sources */}
+          <div className="step">
+            <div className="step-label">3 · Sources <span style={{fontWeight:400,color:'var(--muted)',letterSpacing:0}}>— optional overrides</span></div>
+
+            <AutoField
+              label="Slack Channel"
+              value={form.slackChannel}
+              onChange={set('slackChannel')}
+              placeholder="#proj-energyaus"
+              autoValue={derivedSlack}
+              autoLabel="guessed"
+            />
+
+            <Field label="GDrive Folder" optional hint="URL or folder ID — Claude Code will search Drive if blank">
+              <input value={form.gdriveFolder} onChange={e => set('gdriveFolder')(e.target.value)} placeholder="https://drive.google.com/…" />
+            </Field>
+          </div>
+
+          {/* Step 4: Config */}
+          <div className="step">
+            <div className="step-label">4 · Config</div>
+            <div className="row2">
+              <Field label="Week Ending">
+                <input type="date" value={form.weekEnding} onChange={e => set('weekEnding')(e.target.value)} />
+              </Field>
+              <Field label="Lookback (days)">
+                <select value={form.timeframeDays} onChange={e => set('timeframeDays')(e.target.value)}>
+                  <option value="7">7 days</option>
+                  <option value="14">14 days</option>
+                  <option value="5">5 days</option>
+                </select>
+              </Field>
+            </div>
+          </div>
+
+        </div>{/* /form-body */}
+
+        <div className="gen-wrap">
+          <button className="gen-btn" onClick={generate} disabled={!canGenerate}>
+            <span>⚡</span>
+            <span>Generate Prompt</span>
+          </button>
+          {!canGenerate && (
+            <div style={{ fontSize:'11px', color:'var(--muted)', textAlign:'center', marginTop:'8px' }}>
+              Customer name and PM name required
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── RIGHT PANEL ── */}
+      <div className="right">
+        {!prompt ? (
+          /* empty state */
+          <div style={{ display:'flex', flexDirection:'column', height:'100%' }}>
+            <div className="empty-state" style={{ flex:'0 0 auto', paddingTop:'60px' }}>
+              <div className="empty-icon">⚡</div>
+              <h3>Fill the form and generate</h3>
+              <p>Your ready-to-run Claude Code prompt will appear here. Copy it in one click.</p>
+            </div>
+
+            {/* workflow */}
+            <div style={{ maxWidth:'460px', margin:'0 auto', width:'100%', padding:'0 20px' }}>
+              <div style={{ fontSize:'10px', fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:'var(--muted)', marginBottom:'14px' }}>How it works</div>
+              <div className="workflow">
+                {[
+                  { n:1, title:'Fill form', desc:'Customer name, PM, DSA. Everything else auto-detects.', active:true },
+                  { n:2, title:'Generate prompt', desc:'App builds the filled Claude Code master prompt.' },
+                  { n:3, title:'Copy → Claude Code', desc:'Paste into Claude Code. It runs all 5 Phase 1 tools.' },
+                  { n:4, title:'Copy JSON output', desc:'Claude Code returns the normalised JSON.' },
+                  { n:5, title:'Import into PPTX tool', desc:'Paste into the Report Generator → Generate PowerPoint.' },
+                ].map(s => (
+                  <div key={s.n} className="wf-step">
+                    <div className={`wf-num ${s.active ? 'active' : ''}`}>{s.n}</div>
+                    <div className="wf-content">
+                      <h4>{s.title}</h4>
+                      <p>{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ fontSize:'10px', fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:'var(--muted)', marginBottom:'14px', marginTop:'28px' }}>Checklist</div>
+              {checks.map((c, i) => (
+                <div key={i} className={`check-item ${c.done ? 'done' : c.optional ? 'waiting' : 'pending'}`}>
+                  <div className="check-dot" style={{ background: c.done ? 'var(--green)' : c.optional ? 'var(--muted)' : 'var(--amber)' }} />
+                  <span style={{ flex:1 }}>{c.label}</span>
+                  {c.note && <span style={{ fontSize:'10px', color:'var(--muted)' }}>{c.note}</span>}
+                  {c.optional && !c.done && <span style={{ fontSize:'10px', color:'var(--muted)' }}>optional</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          /* prompt output */
+          <>
+            <div className="output-header">
+              <div>
+                <div className="output-title">GENERATED CLAUDE CODE PROMPT</div>
+                <div style={{ fontSize:'11px', color:'var(--muted)', marginTop:'3px' }}>
+                  {form.customerName} · Week ending {form.weekEnding}
+                </div>
+              </div>
+              <div className="output-actions">
+                <button className="action-btn" onClick={generate}>↺ Regenerate</button>
+                <button className={`action-btn primary ${copied ? 'copied' : ''}`} onClick={copy}>
+                  {copied ? '✓ Copied!' : '⧉ Copy prompt'}
+                </button>
+              </div>
+            </div>
+
+            <div className="prompt-box">
+              <div className="prompt-toolbar">
+                <div className="dot" style={{ background:'#ffcc44' }} />
+                <div className="dot" style={{ background:'#fff' }} />
+                <div className="dot" style={{ background:'#ffeecc' }} />
+                <span className="prompt-filename">ps_report_prompt.txt</span>
+              </div>
+              <div
+                className="prompt-content"
+                dangerouslySetInnerHTML={{ __html: highlight(prompt) }}
+              />
+            </div>
+
+            <div style={{ marginTop:'16px', background:'#1e1e1e', border:'1px solid #3d3d3d', borderRadius:'8px', padding:'14px 18px', display:'flex', alignItems:'flex-start', gap:'12px' }}>
+              <span style={{ fontSize:'18px', flexShrink:0 }}>💡</span>
+              <div style={{ fontSize:'12px', color:'var(--muted)', lineHeight:'1.6' }}>
+                <strong style={{ color:'var(--sub)' }}>Next step:</strong> Copy the prompt above → open Claude Code → paste and run.
+                Claude Code will call Slack, Gmail, GDrive, Salesforce (via <code style={{ fontFamily:'var(--mono)', fontSize:'11px', color:'var(--blue)' }}>fe-internal-tools</code>), and Glean automatically,
+                then return the normalised JSON. Paste that JSON into the <strong style={{ color:'var(--sub)' }}>Report Generator</strong> import modal.
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

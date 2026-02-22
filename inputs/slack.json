@@ -1,0 +1,20 @@
+{
+  "messages": [
+    {
+      "title": "Delivery milestone slipped for integration API",
+      "owner": "Anya",
+      "status": "in_progress",
+      "impact": "High",
+      "detail": "Vendor delayed endpoint stabilization by 5 days.",
+      "action": "Run recovery plan and re-baseline timeline by Tuesday."
+    },
+    {
+      "title": "QA execution complete for sprint 6 scope",
+      "owner": "Ravi",
+      "status": "completed",
+      "impact": "Medium",
+      "detail": "All priority test scenarios passed in staging.",
+      "action": "Prepare sign-off note for release board."
+    }
+  ]
+}

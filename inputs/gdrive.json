@@ -1,0 +1,12 @@
+{
+  "documents": [
+    {
+      "title": "Program RAID Log",
+      "owner": "PMO",
+      "state": "updated",
+      "priority": "Medium",
+      "summary": "Two mitigations closed and one new dependency added.",
+      "required_action": "Confirm owner assignment for new dependency."
+    }
+  ]
+}

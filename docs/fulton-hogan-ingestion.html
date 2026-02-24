@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fulton Hogan - SQL Server to Databricks Ingestion Options</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #003366 0%, #0066cc 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 8px 8px 0 0;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .header .subtitle {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+        .content {
+            padding: 40px;
+        }
+        .intro-box {
+            background: #f0f7ff;
+            border-left: 4px solid #0066cc;
+            padding: 20px;
+            margin-bottom: 40px;
+            border-radius: 4px;
+        }
+        .intro-box h2 {
+            color: #003366;
+            margin-bottom: 15px;
+        }
+        .options-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .options-table th {
+            background: #003366;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .options-table td {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .options-table tr:hover {
+            background: #f8f9fa;
+        }
+        .option-label {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #0066cc;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .recommended {
+            background: #e8f5e9;
+        }
+        .recommended .option-label {
+            background: #28a745;
+        }
+
+        /* Flowchart Styles */
+        .flowchart {
+            margin: 40px 0;
+            padding: 30px;
+            background: white;
+            border: 2px solid #0066cc;
+            border-radius: 8px;
+        }
+        .flowchart h2 {
+            color: #003366;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .decision-box {
+            background: #f0f7ff;
+            border: 2px solid #0066cc;
+            border-radius: 8px;
+            padding: 20px 30px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+        }
+        .flow-branches {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            max-width: 900px;
+            margin-top: 20px;
+        }
+        .branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .yes-box {
+            background: #e8f5e9;
+            border-color: #28a745;
+        }
+        .no-box {
+            background: #ffebee;
+            border-color: #dc3545;
+        }
+        .option-box {
+            background: white;
+            border: 2px solid #003366;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            width: 100%;
+        }
+        .arrow-down {
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 20px solid #0066cc;
+        }
+        .connector-line {
+            width: 2px;
+            height: 30px;
+            background: #0066cc;
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            margin-top: 40px;
+        }
+        .comparison-section h2 {
+            color: #003366;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .pros-cons-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .pros-cons-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .pros-cons-table td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: top;
+        }
+        .pros {
+            color: #155724;
+            background: #d4edda;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        .cons {
+            color: #721c24;
+            background: #f8d7da;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        .recommendation {
+            background: #fff3e0;
+            border-left: 4px solid #ff6b35;
+            padding: 20px;
+            margin: 40px 0;
+            border-radius: 4px;
+        }
+        .recommendation h3 {
+            color: #e65100;
+            margin-bottom: 15px;
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover {
+            background: #0052a3;
+        }
+        ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .cost-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #f0f7ff;
+            color: #003366;
+            border: 1px solid #0066cc;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .complexity-low { color: #28a745; }
+        .complexity-medium { color: #ffc107; }
+        .complexity-high { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SQL Server to Databricks Ingestion Options</h1>
+            <div class="subtitle">Fulton Hogan - JDE Data Migration Assessment</div>
+        </div>
+
+        <div class="content">
+            <a href="https://pravinva.github.io/pm-automation/" class="back-btn">Back to Dashboard</a>
+
+            <div class="intro-box">
+                <h2>Ingestion Options Overview</h2>
+                <p><strong>Context:</strong> Fulton Hogan needs to ingest JDE SQL Server data into Databricks with a 15-minute SLA requirement. The primary constraint is whether readable secondary access is required, which significantly impacts the available options.</p>
+                <p style="margin-top: 15px;"><strong>Options Available:</strong> We have evaluated six distinct approaches (A-E plus Lakeflow) based on technical feasibility, production impact, and alignment with requirements.</p>
+            </div>
+
+            <!-- Main Options Table -->
+            <h2 style="color: #003366; border-bottom: 2px solid #0066cc; padding-bottom: 10px; margin-bottom: 20px;">
+                Options Summary Table
+            </h2>
+
+            <table class="options-table">
+                <thead>
+                    <tr>
+                        <th>Option</th>
+                        <th>Method</th>
+                        <th>Latency</th>
+                        <th>Complexity</th>
+                        <th>Reads From</th>
+                        <th>Monthly Cost</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="option-label">A</span></td>
+                        <td><strong>Databricks Jobs + JDBC + CDC</strong><br>DIY LSN watermarking</td>
+                        <td>15-30 min</td>
+                        <td><span class="complexity-high">High</span></td>
+                        <td>Primary Only</td>
+                        <td><span class="cost-badge">~$1,000</span></td>
+                        <td>Teams wanting full control</td>
+                    </tr>
+                    <tr>
+                        <td><span class="option-label">B</span></td>
+                        <td><strong>Delta Live Tables + JDBC</strong><br>Managed version of Option A</td>
+                        <td>15-30 min</td>
+                        <td><span class="complexity-medium">Medium</span></td>
+                        <td>Primary Only</td>
+                        <td><span class="cost-badge">~$1,200</span></td>
+                        <td>Declarative pipeline preference</td>
+                    </tr>
+                    <tr>
+                        <td><span class="option-label">C</span></td>
+                        <td><strong>SQL Agent + ADLS + Autoloader</strong><br>Server-side extraction</td>
+                        <td>15-60 min</td>
+                        <td><span class="complexity-medium">Medium</span></td>
+                        <td>Primary Only</td>
+                        <td><span class="cost-badge">~$800</span></td>
+                        <td>DBA-controlled pipelines</td>
+                    </tr>
+                    <tr>
+                        <td><span class="option-label">D</span></td>
+                        <td><strong>Fivetran Standard CDC</strong><br>Managed external connector</td>
+                        <td>15 min</td>
+                        <td><span class="complexity-low">Low</span></td>
+                        <td>Primary Only</td>
+                        <td><span class="cost-badge">~$2,500</span></td>
+                        <td>Quick deployment needs</td>
+                    </tr>
+                    <tr>
+                        <td><span class="option-label">E</span></td>
+                        <td><strong>Fivetran Binary Log Reader</strong><br>Log-based CDC</td>
+                        <td>5-15 min</td>
+                        <td><span class="complexity-medium">Medium</span></td>
+                        <td><strong>Secondary OK</strong></td>
+                        <td><span class="cost-badge">~$5,000+</span></td>
+                        <td>Secondary node requirement</td>
+                    </tr>
+                    <tr class="recommended">
+                        <td><span class="option-label">L</span></td>
+                        <td><strong>Lakeflow Connect + TapWorks</strong><br>Databricks-native CDC</td>
+                        <td>10-15 min</td>
+                        <td><span class="complexity-low">Low</span></td>
+                        <td>Primary Only</td>
+                        <td><span class="cost-badge">~$800</span></td>
+                        <td><strong>RECOMMENDED</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Decision Flowchart -->
+            <div class="flowchart">
+                <h2>Decision Flowchart</h2>
+                <div class="flow-container">
+                    <div class="decision-box">
+                        <strong>Q1: Is readable secondary access a hard requirement?</strong>
+                    </div>
+
+                    <div class="arrow-down"></div>
+
+                    <div class="flow-branches">
+                        <div class="branch">
+                            <div class="option-box yes-box">
+                                <strong>YES - Secondary Required</strong>
+                            </div>
+                            <div class="connector-line"></div>
+                            <div class="decision-box">
+                                <strong>Q2: Budget for enterprise tools?</strong>
+                            </div>
+                            <div class="connector-line"></div>
+                            <div class="option-box">
+                                <span class="option-label">E</span>
+                                <strong>Fivetran Binary Log Reader</strong>
+                                <p style="margin-top: 10px; font-size: 14px;">
+                                    Only option that reads from secondary<br>
+                                    Cost: $5,000+/month
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="branch">
+                            <div class="option-box no-box">
+                                <strong>NO - Primary OK</strong>
+                            </div>
+                            <div class="connector-line"></div>
+                            <div class="decision-box">
+                                <strong>Q2: Managed or DIY?</strong>
+                            </div>
+                            <div class="connector-line"></div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;">
+                                <div class="option-box" style="background: #e8f5e9;">
+                                    <span class="option-label" style="background: #28a745;">L</span>
+                                    <strong>Lakeflow Connect</strong>
+                                    <p style="margin-top: 10px; font-size: 14px;">
+                                        Fully managed<br>
+                                        Databricks-native<br>
+                                        <strong>RECOMMENDED</strong>
+                                    </p>
+                                </div>
+                                <div class="option-box">
+                                    <span class="option-label">A</span>
+                                    <strong>DIY JDBC CDC</strong>
+                                    <p style="margin-top: 10px; font-size: 14px;">
+                                        Full control<br>
+                                        Higher complexity<br>
+                                        More maintenance
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 40px; width: 100%; max-width: 700px;">
+                        <div class="decision-box">
+                            <strong>Q3: External tools acceptable?</strong>
+                        </div>
+                        <div class="connector-line" style="margin: 0 auto;"></div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 20px;">
+                            <div class="option-box">
+                                <span class="option-label">C</span>
+                                <strong>SQL Agent</strong>
+                                <p style="font-size: 12px; margin-top: 5px;">DBA owned</p>
+                            </div>
+                            <div class="option-box">
+                                <span class="option-label">D</span>
+                                <strong>Fivetran</strong>
+                                <p style="font-size: 12px; margin-top: 5px;">Quick setup</p>
+                            </div>
+                            <div class="option-box">
+                                <span class="option-label">B</span>
+                                <strong>DLT</strong>
+                                <p style="font-size: 12px; margin-top: 5px;">Declarative</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Comparison -->
+            <div class="comparison-section">
+                <h2>Detailed Option Analysis</h2>
+
+                <table class="pros-cons-table">
+                    <thead>
+                        <tr>
+                            <th>Option</th>
+                            <th>Pros</th>
+                            <th>Cons</th>
+                            <th>When to Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>A - DIY JDBC CDC</strong></td>
+                            <td class="pros">
+                                • Full control over pipeline<br>
+                                • No external dependencies<br>
+                                • Databricks-native solution
+                            </td>
+                            <td class="cons">
+                                • Complex LSN watermarking<br>
+                                • Manual error handling<br>
+                                • High maintenance overhead
+                            </td>
+                            <td>Only if Lakeflow unavailable and team has deep CDC expertise</td>
+                        </tr>
+                        <tr>
+                            <td><strong>B - Delta Live Tables</strong></td>
+                            <td class="pros">
+                                • Declarative pipeline<br>
+                                • Built-in monitoring<br>
+                                • Automatic retries
+                            </td>
+                            <td class="cons">
+                                • Still manual CDC logic<br>
+                                • Primary only<br>
+                                • Learning curve
+                            </td>
+                            <td>Teams preferring declarative over imperative code</td>
+                        </tr>
+                        <tr>
+                            <td><strong>C - SQL Agent + ADLS</strong></td>
+                            <td class="pros">
+                                • DBA team control<br>
+                                • SQL Server native tools<br>
+                                • Sidesteps JDBC concerns
+                            </td>
+                            <td class="cons">
+                                • Additional I/O on SQL Server<br>
+                                • PolyBase complexity<br>
+                                • Cross-team dependency
+                            </td>
+                            <td>When DBAs must own extraction process</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D - Fivetran Standard</strong></td>
+                            <td class="pros">
+                                • Quick deployment<br>
+                                • Fully managed<br>
+                                • Battle-tested
+                            </td>
+                            <td class="cons">
+                                • Vendor lock-in<br>
+                                • Additional cost<br>
+                                • Primary only
+                            </td>
+                            <td>Rapid deployment with budget for SaaS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>E - Fivetran Binary Log</strong></td>
+                            <td class="pros">
+                                • Reads from secondary<br>
+                                • Minimal source impact<br>
+                                • Near real-time
+                            </td>
+                            <td class="cons">
+                                • Very expensive<br>
+                                • Complex setup<br>
+                                • External dependency
+                            </td>
+                            <td>ONLY if secondary is mandatory requirement</td>
+                        </tr>
+                        <tr style="background: #e8f5e9;">
+                            <td><strong>L - Lakeflow Connect</strong></td>
+                            <td class="pros">
+                                • Fully managed CDC<br>
+                                • Databricks-native<br>
+                                • Automatic everything<br>
+                                • Cost-effective
+                            </td>
+                            <td class="cons">
+                                • Primary only<br>
+                                • Newer technology<br>
+                                • Databricks-specific
+                            </td>
+                            <td><strong>DEFAULT CHOICE - Use unless constraints prevent</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Recommendation -->
+            <div class="recommendation">
+                <h3>Databricks Recommendation</h3>
+                <p><strong>Primary Recommendation: Lakeflow Connect + TapWorks</strong></p>
+                <ul>
+                    <li>Fully managed CDC without manual watermarking complexity</li>
+                    <li>Lowest TCO at ~$800/month vs $5,000+ for alternatives with similar capabilities</li>
+                    <li>Native Databricks integration - no external tools or vendors</li>
+                    <li>Automatic schema evolution, monitoring, and error handling</li>
+                    <li>Pipeline grouping allows controlled load distribution</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Decision Process:</strong></p>
+                <ol>
+                    <li>Test with read replica first to profile change velocity</li>
+                    <li>Run controlled test on primary during maintenance window</li>
+                    <li>If primary load acceptable → Proceed with Lakeflow</li>
+                    <li>If primary forbidden → Option E (Fivetran Binary Log) is only choice</li>
+                </ol>
+            </div>
+
+            <!-- Key Data Requirements -->
+            <div class="comparison-section">
+                <h2>Data Requirements Before Decision</h2>
+                <table class="options-table">
+                    <thead>
+                        <tr>
+                            <th>Data Point</th>
+                            <th>How to Gather</th>
+                            <th>Why It Matters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Change velocity per table</td>
+                            <td>Query CT tables on replica</td>
+                            <td>Determines pipeline grouping and frequency</td>
+                        </tr>
+                        <tr>
+                            <td>Peak primary load baseline</td>
+                            <td>sys.dm_os_wait_stats during business hours</td>
+                            <td>Establishes if CDC adds meaningful load</td>
+                        </tr>
+                        <tr>
+                            <td>Table sizes (rows + width)</td>
+                            <td>sys.dm_db_partition_stats</td>
+                            <td>Sizes initial snapshot batches</td>
+                        </tr>
+                        <tr>
+                            <td>Secondary restriction reason</td>
+                            <td>DBA team discussion</td>
+                            <td>Policy vs technical - may be negotiable</td>
+                        </tr>
+                        <tr>
+                            <td>Fivetran HVR pricing</td>
+                            <td>Commercial discussion</td>
+                            <td>Determines if Option E viable</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
+                <p><strong>Next Steps:</strong></p>
+                <p>1. Profile change velocity from replica | 2. Test Lakeflow on primary | 3. Make decision based on load impact</p>
+                <p style="margin-top: 15px;">
+                    <a href="https://pravinva.github.io/pm-automation/" class="back-btn">Back to Dashboard</a>
+                    <a href="https://pravinva.github.io/pm-automation/report.html" class="back-btn" style="margin-left: 10px;">View Status Report</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

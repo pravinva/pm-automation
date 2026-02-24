@@ -258,7 +258,7 @@
             <div class="intro-box">
                 <h2>Ingestion Options Overview</h2>
                 <p><strong>Context:</strong> Fulton Hogan needs to ingest JDE SQL Server data into Databricks with a 15-minute SLA requirement. The primary constraint is whether readable secondary access is required, which significantly impacts the available options.</p>
-                <p style="margin-top: 15px;"><strong>Evaluation Framework:</strong> Here's an assessment of different ingestion approaches based on technical feasibility, production impact, and alignment with requirements.</p>
+                <p style="margin-top: 15px;"><strong>Evaluation Framework:</strong> Here's an assessment of different ingestion approaches based on technical feasibility, production impact, and alignment with requirements. Note: Lakeflow + TapWorks provides the parallelization solution needed for handling large-scale ingestion.</p>
             </div>
 
             <!-- Main Options Table -->
@@ -378,10 +378,10 @@
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;">
                                 <div class="option-box" style="background: #e8f5e9;">
                                     <span class="option-label" style="background: #28a745;">L</span>
-                                    <strong>Lakeflow Connect</strong>
+                                    <strong>Lakeflow + TapWorks</strong>
                                     <p style="margin-top: 10px; font-size: 14px;">
                                         Fully managed<br>
-                                        Databricks-native<br>
+                                        Parallelized ingestion<br>
                                         <strong>RECOMMENDED</strong>
                                     </p>
                                 </div>
@@ -450,7 +450,7 @@
                                 • Manual error handling<br>
                                 • High maintenance overhead
                             </td>
-                            <td>Only if Lakeflow unavailable and team has deep CDC expertise</td>
+                            <td>Only if Lakeflow + TapWorks unavailable and team has deep CDC expertise</td>
                         </tr>
                         <tr>
                             <td><strong>B - Delta Live Tables</strong></td>
@@ -509,11 +509,11 @@
                             <td>ONLY if secondary is mandatory requirement</td>
                         </tr>
                         <tr style="background: #e8f5e9;">
-                            <td><strong>L - Lakeflow Connect</strong></td>
+                            <td><strong>L - Lakeflow + TapWorks</strong></td>
                             <td class="pros">
                                 • Fully managed CDC<br>
-                                • Databricks-native<br>
-                                • Automatic everything<br>
+                                • Parallelized ingestion<br>
+                                • Automatic watermarking<br>
                                 • Cost-effective
                             </td>
                             <td class="cons">
@@ -521,7 +521,7 @@
                                 • Newer technology<br>
                                 • Databricks-specific
                             </td>
-                            <td><strong>DEFAULT CHOICE - Use unless constraints prevent</strong></td>
+                            <td><strong>DEFAULT CHOICE - TapWorks enables parallel processing for scale</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -542,7 +542,7 @@
                 <ol>
                     <li>Test with read replica first to profile change velocity</li>
                     <li>Run controlled test on primary during maintenance window</li>
-                    <li>If primary load acceptable → Proceed with Lakeflow</li>
+                    <li>If primary load acceptable → Proceed with Lakeflow + TapWorks</li>
                     <li>If primary forbidden → Option E (Fivetran Binary Log) is only choice</li>
                 </ol>
             </div>

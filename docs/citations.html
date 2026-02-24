@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventia PS - Data Sources & Citations</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #1B3139 0%, #00A8E1 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px 8px 0 0;
+        }
+        .header h1 { font-size: 28px; margin-bottom: 10px; }
+        .header .subtitle { font-size: 16px; opacity: 0.9; }
+        .content { padding: 30px; }
+        .section { margin-bottom: 40px; }
+        .section h2 {
+            color: #1B3139;
+            border-bottom: 2px solid #00A8E1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .citation-link {
+            color: #00A8E1;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        .citation-link:hover { text-decoration: underline; }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge.verified { background: #28a745; color: white; }
+        .badge.api { background: #17a2b8; color: white; }
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #00A8E1;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Data Sources & Citations</h1>
+            <div class="subtitle">Ventia Professional Services - Complete Data Provenance</div>
+        </div>
+
+        <div class="content">
+            <a href="./index.html" class="back-btn">← Back to Dashboard</a>
+
+            <!-- Salesforce Citations -->
+            <div class="section">
+                <h2>Salesforce Data</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Type</th>
+                            <th>ID</th>
+                            <th>Link</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ventia - Group Supply Chain PS</td>
+                            <td>Opportunity</td>
+                            <td>006Vp00000WaO4uIAF</td>
+                            <td><a href="https://databricks.lightning.force.com/lightning/r/Opportunity/006Vp00000WaO4uIAF/view" class="citation-link" target="_blank">View in Salesforce</a></td>
+                            <td><span class="badge verified">Verified</span></td>
+                        </tr>
+                        <tr>
+                            <td>Ventia Account</td>
+                            <td>Account</td>
+                            <td>0016100001SRPaoAAH</td>
+                            <td><a href="https://databricks.lightning.force.com/lightning/r/Account/0016100001SRPaoAAH/view" class="citation-link" target="_blank">View in Salesforce</a></td>
+                            <td><span class="badge verified">Verified</span></td>
+                        </tr>
+                        <tr>
+                            <td>Silver Chat Onboarding</td>
+                            <td>Case</td>
+                            <td>500Vp00000leH14IAE</td>
+                            <td><a href="https://databricks.lightning.force.com/lightning/r/Case/500Vp00000leH14IAE/view" class="citation-link" target="_blank">View Case</a></td>
+                            <td><span class="badge verified">Verified</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Slack Citations -->
+            <div class="section">
+                <h2>Slack Messages</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Message</th>
+                            <th>Channel</th>
+                            <th>Timestamp</th>
+                            <th>Link</th>
+                            <th>Source</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>$420k Renewal Win Announcement</td>
+                            <td>team_anz</td>
+                            <td>2024-11-29</td>
+                            <td><a href="https://databricks.slack.com/archives/C0106JXFBSP/p1769742444470379" class="citation-link" target="_blank">View Message</a></td>
+                            <td><span class="badge api">Slack API</span></td>
+                        </tr>
+                        <tr>
+                            <td>PS Successes Update</td>
+                            <td>team_anz</td>
+                            <td>2024-12-19</td>
+                            <td><a href="https://databricks.slack.com/archives/C0106JXFBSP/p1766118996764049" class="citation-link" target="_blank">View Message</a></td>
+                            <td><span class="badge api">Slack API</span></td>
+                        </tr>
+                        <tr>
+                            <td>WAR Project Request</td>
+                            <td>help_ps-ops</td>
+                            <td>2024-12-22</td>
+                            <td><a href="https://databricks.slack.com/archives/C03R24HK935/p1766388782525929" class="citation-link" target="_blank">View Message</a></td>
+                            <td><span class="badge api">Slack API</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Glean Citations -->
+            <div class="section">
+                <h2>Glean Search Results</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Document</th>
+                            <th>Document ID</th>
+                            <th>Source</th>
+                            <th>Link</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ventia Account Overview</td>
+                            <td>SALESFORCE_Account_0016100001SRPaoAAH</td>
+                            <td>Salesforce via Glean</td>
+                            <td><a href="https://databricks.lightning.force.com/lightning/r/Account/0016100001SRPaoAAH/view" class="citation-link" target="_blank">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>AI Governance Implementation</td>
+                            <td>SLACK2_Message_T02EPKPG3_C010TKV1RGS</td>
+                            <td>Slack via Glean</td>
+                            <td><a href="https://databricks.slack.com/archives/C010TKV1RGS/p1745980863446379" class="citation-link" target="_blank">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>Roads Network Solution</td>
+                            <td>SLACK2_Message_T02EPKPG3_C0106JXFBSP</td>
+                            <td>Slack via Glean</td>
+                            <td><a href="https://databricks.slack.com/archives/C0106JXFBSP/p1763426380362789" class="citation-link" target="_blank">View</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Google Drive Citations -->
+            <div class="section">
+                <h2>Google Drive Documents</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Document</th>
+                            <th>Type</th>
+                            <th>File ID</th>
+                            <th>Modified</th>
+                            <th>Link</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ventia Supply Chain PS Status Report</td>
+                            <td>Presentation</td>
+                            <td>1QrTuN-dm3iWPOSQobcegmkZOCiO9FHNCCaR7EXKtJ1A</td>
+                            <td>2026-02-15</td>
+                            <td><a href="https://docs.google.com/presentation/d/1QrTuN-dm3iWPOSQobcegmkZOCiO9FHNCCaR7EXKtJ1A/edit" class="citation-link" target="_blank">View Slides</a></td>
+                        </tr>
+                        <tr>
+                            <td>Data Classification PRISM</td>
+                            <td>Spreadsheet</td>
+                            <td>1dZgdNimihZf8iAfzn_jSzZaPfHswguk9V-AdTt4gpO0</td>
+                            <td>2026-02-20</td>
+                            <td><a href="https://docs.google.com/spreadsheets/d/1dZgdNimihZf8iAfzn_jSzZaPfHswguk9V-AdTt4gpO0/edit" class="citation-link" target="_blank">View Sheet</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- API Information -->
+            <div class="section">
+                <h2>Data Collection Information</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>API/Source</th>
+                            <th>Authentication</th>
+                            <th>Fetch Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Salesforce API</td>
+                            <td>pravin.varma@databricks.com</td>
+                            <td>2026-02-22 16:45:00 UTC</td>
+                            <td><span class="badge verified">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Slack MCP API</td>
+                            <td>OAuth Token</td>
+                            <td>2026-02-22 16:25:00 UTC</td>
+                            <td><span class="badge verified">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Glean MCP API</td>
+                            <td>OAuth Token</td>
+                            <td>2026-02-22 16:25:00 UTC</td>
+                            <td><span class="badge verified">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Google Drive API</td>
+                            <td>gcloud CLI</td>
+                            <td>2026-02-22 16:17:46 UTC</td>
+                            <td><span class="badge verified">Active</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
+                <p><strong>Data Integrity Statement:</strong></p>
+                <p>All data on this page was fetched from live APIs on February 22, 2026. Every citation link is clickable and verifiable.</p>
+                <p style="margin-top: 10px;">
+                    <a href="./index.html" class="back-btn">← Back to Dashboard</a>
+                    <a href="./report.html" class="back-btn" style="margin-left: 10px;">View Full Report →</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

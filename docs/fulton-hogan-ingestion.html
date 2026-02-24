@@ -258,7 +258,7 @@
             <div class="intro-box">
                 <h2>Ingestion Options Overview</h2>
                 <p><strong>Context:</strong> Fulton Hogan needs to ingest JDE SQL Server data into Databricks with a 15-minute SLA requirement. The primary constraint is whether readable secondary access is required, which significantly impacts the available options.</p>
-                <p style="margin-top: 15px;"><strong>Options Available:</strong> We have evaluated six distinct approaches (A-E plus Lakeflow) based on technical feasibility, production impact, and alignment with requirements.</p>
+                <p style="margin-top: 15px;"><strong>Evaluation Framework:</strong> Here's an assessment of different ingestion approaches based on technical feasibility, production impact, and alignment with requirements.</p>
             </div>
 
             <!-- Main Options Table -->
@@ -285,7 +285,7 @@
                         <td>15-30 min</td>
                         <td><span class="complexity-high">High</span></td>
                         <td>Primary Only</td>
-                        <td><span class="cost-badge">~$1,000</span></td>
+                        <td><span class="cost-badge">Low-Medium</span></td>
                         <td>Teams wanting full control</td>
                     </tr>
                     <tr>
@@ -294,7 +294,7 @@
                         <td>15-30 min</td>
                         <td><span class="complexity-medium">Medium</span></td>
                         <td>Primary Only</td>
-                        <td><span class="cost-badge">~$1,200</span></td>
+                        <td><span class="cost-badge">Low-Medium</span></td>
                         <td>Declarative pipeline preference</td>
                     </tr>
                     <tr>
@@ -303,7 +303,7 @@
                         <td>15-60 min</td>
                         <td><span class="complexity-medium">Medium</span></td>
                         <td>Primary Only</td>
-                        <td><span class="cost-badge">~$800</span></td>
+                        <td><span class="cost-badge">Low</span></td>
                         <td>DBA-controlled pipelines</td>
                     </tr>
                     <tr>
@@ -312,7 +312,7 @@
                         <td>15 min</td>
                         <td><span class="complexity-low">Low</span></td>
                         <td>Primary Only</td>
-                        <td><span class="cost-badge">~$2,500</span></td>
+                        <td><span class="cost-badge">Medium</span></td>
                         <td>Quick deployment needs</td>
                     </tr>
                     <tr>
@@ -321,7 +321,7 @@
                         <td>5-15 min</td>
                         <td><span class="complexity-medium">Medium</span></td>
                         <td><strong>Secondary OK</strong></td>
-                        <td><span class="cost-badge">~$5,000+</span></td>
+                        <td><span class="cost-badge">High</span></td>
                         <td>Secondary node requirement</td>
                     </tr>
                     <tr class="recommended">
@@ -330,7 +330,7 @@
                         <td>10-15 min</td>
                         <td><span class="complexity-low">Low</span></td>
                         <td>Primary Only</td>
-                        <td><span class="cost-badge">~$800</span></td>
+                        <td><span class="cost-badge">Low</span></td>
                         <td><strong>RECOMMENDED</strong></td>
                     </tr>
                 </tbody>
@@ -361,7 +361,7 @@
                                 <strong>Fivetran Binary Log Reader</strong>
                                 <p style="margin-top: 10px; font-size: 14px;">
                                     Only option that reads from secondary<br>
-                                    Cost: $5,000+/month
+                                    High cost tier
                                 </p>
                             </div>
                         </div>
@@ -533,7 +533,7 @@
                 <p><strong>Primary Recommendation: Lakeflow Connect + TapWorks</strong></p>
                 <ul>
                     <li>Fully managed CDC without manual watermarking complexity</li>
-                    <li>Lowest TCO at ~$800/month vs $5,000+ for alternatives with similar capabilities</li>
+                    <li>Lowest total cost of ownership compared to alternatives</li>
                     <li>Native Databricks integration - no external tools or vendors</li>
                     <li>Automatic schema evolution, monitoring, and error handling</li>
                     <li>Pipeline grouping allows controlled load distribution</li>
@@ -555,7 +555,7 @@
                         <tr>
                             <th>Data Point</th>
                             <th>How to Gather</th>
-                            <th>Why It Matters</th>
+                            <th>Comments</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -589,9 +589,7 @@
             </div>
 
             <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
-                <p><strong>Next Steps:</strong></p>
-                <p>1. Profile change velocity from replica | 2. Test Lakeflow on primary | 3. Make decision based on load impact</p>
-                <p style="margin-top: 15px; font-size: 12px; color: #666;">
+                <p style="font-size: 14px; color: #666;">
                     Contact your Databricks Solutions Architect for implementation guidance
                 </p>
             </div>

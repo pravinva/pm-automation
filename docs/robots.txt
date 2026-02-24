@@ -1,0 +1,12 @@
+# Robots.txt for PM Automation GitHub Pages
+
+User-agent: *
+Disallow: /pm-automation/fulton-hogan-ingestion.html
+
+# Allow indexing of main reports
+Allow: /pm-automation/
+Allow: /pm-automation/index.html
+Allow: /pm-automation/report.html
+Allow: /pm-automation/citations.html
+
+Sitemap: https://pravinva.github.io/pm-automation/sitemap.xml

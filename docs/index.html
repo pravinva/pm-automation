@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventia Professional Services - Status Reports</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            padding: 40px 0;
+        }
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .header .subtitle {
+            font-size: 20px;
+            opacity: 0.95;
+        }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #1B3139 0%, #00A8E1 100%);
+            color: white;
+            padding: 20px;
+        }
+        .card-header h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .card-header .date {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .metric .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00A8E1;
+        }
+        .metric .label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .status-badges {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge.green { background: #d4edda; color: #155724; }
+        .badge.amber { background: #fff3cd; color: #856404; }
+        .badge.red { background: #f8d7da; color: #721c24; }
+        .view-report-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+        .view-report-btn:hover {
+            opacity: 0.9;
+        }
+        .highlights {
+            margin: 20px 0;
+        }
+        .highlights ul {
+            list-style: none;
+            padding: 0;
+        }
+        .highlights li {
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+            border-bottom: 1px solid #eee;
+        }
+        .highlights li:last-child {
+            border-bottom: none;
+        }
+        .highlights li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            padding: 20px;
+        }
+        .footer a {
+            color: white;
+            text-decoration: underline;
+        }
+        .live-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #28a745;
+            color: white;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Ventia Professional Services</h1>
+            <div class="subtitle">Databricks Engagement Status Reports <span class="live-indicator">LIVE DATA</span></div>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Current Week Report -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Weekly Status Report</h2>
+                    <div class="date">February 8-22, 2026</div>
+                </div>
+                <div class="card-body">
+                    <div class="metrics">
+                        <div class="metric">
+                            <div class="value">$420K</div>
+                            <div class="label">Annual Renewal</div>
+                        </div>
+                        <div class="metric">
+                            <div class="value">$106K</div>
+                            <div class="label">PS Engagement</div>
+                        </div>
+                        <div class="metric">
+                            <div class="value">2.4M</div>
+                            <div class="label">Assets Managed</div>
+                        </div>
+                        <div class="metric">
+                            <div class="value">$4B</div>
+                            <div class="label">Transactions/Year</div>
+                        </div>
+                    </div>
+
+                    <div class="status-badges">
+                        <span class="badge red">Overall: RED</span>
+                        <span class="badge amber">Scope: AMBER</span>
+                        <span class="badge amber">Schedule: AMBER</span>
+                        <span class="badge green">Make-It-Right: GREEN</span>
+                    </div>
+
+                    <div class="highlights">
+                        <strong>Key Highlights:</strong>
+                        <ul>
+                            <li>Secured $420k annual renewal commitment</li>
+                            <li>Defence contract: 2.4M assets ($400M/year)</li>
+                            <li>Supply Chain: $4B transactions analytics</li>
+                            <li>CEO meeting scheduled for March 2026</li>
+                        </ul>
+                    </div>
+
+                    <a href="report.html" class="view-report-btn">View Full Report →</a>
+                </div>
+            </div>
+
+            <!-- Data Sources Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Data Sources & Citations</h2>
+                    <div class="date">Real-time Integration Status</div>
+                </div>
+                <div class="card-body">
+                    <div class="highlights">
+                        <strong>Connected Systems:</strong>
+                        <ul>
+                            <li>Salesforce: 1 Opportunity, 5 Cases</li>
+                            <li>Slack: 4 Key Messages (57 total found)</li>
+                            <li>Glean: 7 Insights (11 total found)</li>
+                            <li>Google Drive: 2 Documents</li>
+                        </ul>
+                    </div>
+
+                    <div class="status-badges">
+                        <span class="badge green">Salesforce: Connected</span>
+                        <span class="badge green">Google Drive: Active</span>
+                        <span class="badge amber">Slack: Token Refresh Needed</span>
+                        <span class="badge amber">Glean: Token Refresh Needed</span>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #00A8E1;">
+                        <strong style="color: #1B3139;">Data Integrity:</strong>
+                        <p style="margin-top: 10px; color: #555;">All data fetched from live APIs with complete citations. Every item is verifiable through source links.</p>
+                    </div>
+
+                    <a href="citations.html" class="view-report-btn">View All Citations →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Generated: February 22, 2026 at 5:00 PM PST</p>
+            <p>Powered by Databricks Professional Services | <a href="https://github.com/pravinva/pm-automation">GitHub Repository</a></p>
+            <p style="margin-top: 10px; font-size: 12px;">
+                All data sourced from authenticated APIs: Salesforce (pravin.varma@databricks.com), Slack MCP, Glean MCP, Google Drive API
+            </p>
+        </div>
+    </div>
+</body>
+</html>

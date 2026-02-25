@@ -1,0 +1,7 @@
+# Prevent directory listing
+Options -Indexes
+
+# Add security headers
+<IfModule mod_headers.c>
+    Header set X-Robots-Tag "noindex, nofollow, noarchive"
+</IfModule>

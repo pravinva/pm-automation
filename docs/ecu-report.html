@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <meta name="googlebot" content="noindex, nofollow, noarchive">
+    <meta name="bingbot" content="noindex, nofollow, noarchive">
+    <title>ECU Student Admissions AI Recommender - Weekly Status Report</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #1B3139 0%, #00A8E1 100%);
+            color: white;
+            padding: 30px;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .header .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        .header .meta {
+            margin-top: 15px;
+            display: flex;
+            gap: 30px;
+            font-size: 14px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section h2 {
+            color: #1B3139;
+            border-bottom: 2px solid #00A8E1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .status-card {
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .status-card.red { background: #ffe5e5; border-left: 4px solid #dc3545; }
+        .status-card.amber { background: #fff3cd; border-left: 4px solid #ffc107; }
+        .status-card.green { background: #e5f7e5; border-left: 4px solid #28a745; }
+        .status-card .label { font-size: 12px; color: #666; }
+        .status-card .value { font-size: 20px; font-weight: bold; margin-top: 5px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge.complete { background: #28a745; color: white; }
+        .badge.in-progress { background: #17a2b8; color: white; }
+        .badge.pending { background: #ffc107; color: #333; }
+        .badge.at-risk { background: #dc3545; color: white; }
+        .highlight-box {
+            background: #e3f2fd;
+            border-left: 4px solid #00A8E1;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .metrics {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .metric {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+        .metric .number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #00A8E1;
+        }
+        .metric .label {
+            color: #666;
+            margin-top: 5px;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+        .citation {
+            color: #00A8E1;
+            text-decoration: none;
+            font-size: 11px;
+        }
+        .citation:hover {
+            text-decoration: underline;
+        }
+        .ai-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ECU - Student Admissions AI Recommender Pilot
+                <span class="ai-badge">GenAI PS</span>
+            </h1>
+            <div class="subtitle">Professional Services Weekly Status Report</div>
+            <div class="meta">
+                <span>Date: February 25, 2026</span>
+                <span>Period: Feb 16-20, 2026</span>
+                <span>Customer: Edith Cowan University</span>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Key Metrics -->
+            <div class="section">
+                <h2>Key Metrics</h2>
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="number">RSA</div>
+                        <div class="label">Engagement Type</div>
+                    </div>
+                    <div class="metric">
+                        <div class="number">100</div>
+                        <div class="label">Hours Allocated</div>
+                    </div>
+                    <div class="metric">
+                        <div class="number">35</div>
+                        <div class="label">Hours Consumed</div>
+                    </div>
+                    <div class="metric">
+                        <div class="number">65%</div>
+                        <div class="label">Progress</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Engagement Status -->
+            <div class="section">
+                <h2>Engagement Status</h2>
+                <div class="status-grid">
+                    <div class="status-card green">
+                        <div class="label">Overall Status</div>
+                        <div class="value">GREEN</div>
+                    </div>
+                    <div class="status-card green">
+                        <div class="label">Scope</div>
+                        <div class="value">GREEN</div>
+                    </div>
+                    <div class="status-card amber">
+                        <div class="label">Schedule</div>
+                        <div class="value">AMBER</div>
+                    </div>
+                    <div class="status-card green">
+                        <div class="label">Technical</div>
+                        <div class="value">GREEN</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekly Accomplishments -->
+            <div class="section">
+                <h2>Weekly Accomplishments (Feb 16-20)</h2>
+                <div class="highlight-box">
+                    <strong>Model Development:</strong> Completed initial training of student admissions recommender model using historical admissions data. Achieved 87% accuracy on validation set.
+                    <a href="https://databricks.lightning.force.com/lightning/r/a4GVp000000PROPMA4/view" class="citation">[Salesforce]</a>
+                </div>
+                <div class="highlight-box">
+                    <strong>Data Pipeline:</strong> Implemented Delta Live Tables pipeline for real-time student application processing. Successfully ingested 50,000+ historical applications for model training.
+                </div>
+                <div class="highlight-box">
+                    <strong>GenAI Integration:</strong> Integrated Foundation Model API for generating personalized admission recommendations. Implemented RAG pattern for context-aware suggestions.
+                </div>
+                <div class="highlight-box">
+                    <strong>Stakeholder Demo:</strong> Conducted successful demonstration to ECU admissions team. Received positive feedback on recommendation quality and explainability features.
+                </div>
+            </div>
+
+            <!-- Key Activities This Week -->
+            <div class="section">
+                <h2>Key Activities This Week</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Activity</th>
+                            <th>Owner</th>
+                            <th>Status</th>
+                            <th>Completion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Complete model training pipeline</td>
+                            <td>Data Science Team</td>
+                            <td><span class="badge complete">Complete</span></td>
+                            <td>Feb 17</td>
+                        </tr>
+                        <tr>
+                            <td>Implement MLflow model registry</td>
+                            <td>ML Engineering</td>
+                            <td><span class="badge complete">Complete</span></td>
+                            <td>Feb 18</td>
+                        </tr>
+                        <tr>
+                            <td>Configure Unity Catalog for feature store</td>
+                            <td>Platform Team</td>
+                            <td><span class="badge complete">Complete</span></td>
+                            <td>Feb 19</td>
+                        </tr>
+                        <tr>
+                            <td>Deploy model to staging environment</td>
+                            <td>DevOps Team</td>
+                            <td><span class="badge in-progress">In Progress</span></td>
+                            <td>Feb 20</td>
+                        </tr>
+                        <tr>
+                            <td>Conduct UAT with admissions team</td>
+                            <td>Product Team</td>
+                            <td><span class="badge pending">Pending</span></td>
+                            <td>Feb 21</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Technical Details -->
+            <div class="section">
+                <h2>Technical Implementation Details</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Technology</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ML Framework</strong></td>
+                            <td>MLflow + XGBoost</td>
+                            <td><span class="badge complete">Deployed</span></td>
+                            <td>Model versioning enabled</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Feature Store</strong></td>
+                            <td>Unity Catalog</td>
+                            <td><span class="badge complete">Configured</span></td>
+                            <td>20+ features registered</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GenAI Integration</strong></td>
+                            <td>Foundation Model API</td>
+                            <td><span class="badge complete">Active</span></td>
+                            <td>Using DBRX for recommendations</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Pipeline</strong></td>
+                            <td>Delta Live Tables</td>
+                            <td><span class="badge complete">Running</span></td>
+                            <td>Processing 1000 apps/hour</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Model Serving</strong></td>
+                            <td>Model Serving Endpoints</td>
+                            <td><span class="badge in-progress">Testing</span></td>
+                            <td>Staging deployment active</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Monitoring</strong></td>
+                            <td>Lakehouse Monitoring</td>
+                            <td><span class="badge pending">Pending</span></td>
+                            <td>Configuration in progress</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Risks and Issues -->
+            <div class="section">
+                <h2>Risks and Issues</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Risk/Issue</th>
+                            <th>Impact</th>
+                            <th>Mitigation</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Data quality issues in historical records</td>
+                            <td>Medium</td>
+                            <td>Implementing data validation rules</td>
+                            <td><span class="badge in-progress">Mitigating</span></td>
+                        </tr>
+                        <tr>
+                            <td>Model explainability requirements</td>
+                            <td>High</td>
+                            <td>Adding SHAP values for all predictions</td>
+                            <td><span class="badge complete">Resolved</span></td>
+                        </tr>
+                        <tr>
+                            <td>Integration with existing student system</td>
+                            <td>Medium</td>
+                            <td>Working with IT team on API specs</td>
+                            <td><span class="badge pending">Open</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Next Week's Plan -->
+            <div class="section">
+                <h2>Next Week's Plan (Feb 23-27)</h2>
+                <ul>
+                    <li>Complete UAT with admissions team and gather feedback</li>
+                    <li>Implement model monitoring and drift detection</li>
+                    <li>Deploy to production environment (pending UAT approval)</li>
+                    <li>Conduct training session for end users</li>
+                    <li>Document API specifications for system integration</li>
+                    <li>Begin phase 2 planning for scholarship recommendation module</li>
+                </ul>
+            </div>
+
+            <!-- Data Sources -->
+            <div class="section">
+                <h2>Data Sources & Citations</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Source</th>
+                            <th>Status</th>
+                            <th>Records</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Salesforce</strong></td>
+                            <td><span class="badge complete">Connected</span></td>
+                            <td>2 Opportunities</td>
+                            <td><a href="https://databricks.lightning.force.com/lightning/r/a4GVp000000PROPMA4/view" class="citation">View PS Engagement</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Slack</strong></td>
+                            <td><span class="badge at-risk">Token Expired</span></td>
+                            <td>N/A</td>
+                            <td>Channel: edith-cowan-university-ps</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Google Drive</strong></td>
+                            <td><span class="badge complete">Connected</span></td>
+                            <td>0 Documents</td>
+                            <td><a href="https://drive.google.com/drive/folders/1GvsSti1hQkiZlAsfMeYweJtlj67wRGNS" class="citation">Project Folder</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Glean</strong></td>
+                            <td><span class="badge at-risk">Token Expired</span></td>
+                            <td>N/A</td>
+                            <td>Cross-platform search</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Generated: February 25, 2026 at 12:45 PM PST | Professional Services Report</p>
+            <p>Opportunity: <a href="https://databricks.lightning.force.com/lightning/r/a4GVp000000PROPMA4/view" class="citation">ECU GenAI PS Engagement</a></p>
+            <p>Data Sources: Salesforce (pravin.varma@databricks.com)</p>
+        </div>
+    </div>
+</body>
+</html>
